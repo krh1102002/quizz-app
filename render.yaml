@@ -16,19 +16,13 @@ services:
         value: 5000
 
   # Frontend Static Site
-  - type: web
+  - type: static_site
     name: quiz-frontend
-    env: static
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: dist
-    routes:
-      # Route all /api requests to the backend
-      # Note: After deployment, replace the destination URL with your actual backend URL
-      - type: rewrite
-        source: /api/*
-        destination: https://quiz-backend.onrender.com/api/*
+    routing:
       # Support for Single Page Application routing
       - type: rewrite
         source: /*
