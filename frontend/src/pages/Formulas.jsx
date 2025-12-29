@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { topicsAPI, subtopicsAPI } from '../services/api';
 import { ChevronDown, ChevronUp, BookOpen, Calculator } from 'lucide-react';
 
 const Formulas = () => {
@@ -16,8 +16,8 @@ const Formulas = () => {
 
   const fetchTopics = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/topics');
-      setTopics(response.data);
+      const data = await topicsAPI.getAll();
+      setTopics(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching topics:', error);
@@ -28,8 +28,8 @@ const Formulas = () => {
   const fetchSubtopicDetails = async (subtopicId) => {
     setLoadingSubtopic(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/subtopics/${subtopicId}`);
-      setSubtopicData(response.data.subtopic);
+      const data = await subtopicsAPI.getOne(subtopicId);
+      setSubtopicData(data.subtopic);
       setSelectedSubtopic(subtopicId);
       setLoadingSubtopic(false);
     } catch (error) {
@@ -83,18 +83,6 @@ const Formulas = () => {
                   
                   {expandedTopic === topic._id && (
                     <div className="bg-gray-50 border-t border-gray-100">
-                        {/* We need to fetch subtopics or if topic object has them. 
-                            Usually topics list implies separate subtopic fetch or population.
-                            Assuming topic API returns subtopics or we need to fetch them.
-                            Wait, the topic model might not have subtopics array populated fully if not requested.
-                            However, looking at seed.js, subtopics are separate documents.
-                            Let's assume we need to fetch subtopics for the topic or they are included.
-                            Let's check topicRoutes.js. 
-                            Wait, I didn't check topicRoutes.js. 
-                            I'll assume I might need to fetch subtopics by topic.
-                            Let's try to see if topic structure has them. 
-                            If not, I will implement a fetch.
-                        */}
                        <SubtopicList topicId={topic._id} onSelect={fetchSubtopicDetails} selectedId={selectedSubtopic} />
                     </div>
                   )}
@@ -171,8 +159,8 @@ const SubtopicList = ({ topicId, onSelect, selectedId }) => {
   useEffect(() => {
     const fetchSub = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/subtopics/by-topic/${topicId}`);
-        setSubtopics(res.data);
+        const data = await subtopicsAPI.getByTopic(topicId);
+        setSubtopics(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
       }
