@@ -138,3 +138,8 @@ export const attemptsAPI = {
   getOne: (id) => apiCall(`/attempts/${id}`),
   getByQuiz: (quizId) => apiCall(`/attempts/quiz/${quizId}`),
 };
+
+// Health API
+export const healthAPI = {
+  check: () => apiCall('/health'),
+};

@@ -117,9 +117,7 @@ export default function Topics() {
               <h3 className="topic-name">{topic.name}</h3>
               <p className="text-secondary text-sm" style={{ marginBottom: 'var(--space-sm)' }}>
                 {topic.description}
-              </p>
-              <p className="topic-count">{topic.quizCount} quizzes available</p>
-            </Link>
+              </p>            </Link>
           ))}
         </div>
       </div>
