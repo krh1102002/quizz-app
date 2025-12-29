@@ -28,7 +28,20 @@ const subtopicSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  formulas: [{
+    title: {
+      type: String,
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    example: {
+      type: String
+    }
+  }]
 }, {
   timestamps: true
 });

@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Analytics from './pages/Analytics';
 import SubtopicQuizzes from './pages/SubtopicQuizzes';
+import Formulas from './pages/Formulas';
 import AdminDashboard from './pages/admin/Dashboard';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/quizzes" element={<Topics />} />
+          <Route path="/formulas" element={<Formulas />} />
           <Route path="/topics" element={<Topics />} />
           <Route path="/topics/:topicId" element={<Topics />} />
           <Route path="/subtopic/:subtopicId" element={<SubtopicQuizzes />} />
