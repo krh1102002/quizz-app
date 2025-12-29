@@ -23,6 +23,10 @@ services:
     buildCommand: npm install && npm run build
     publishDir: dist
     routing:
+      # Route all /api requests to the backend
+      - type: rewrite
+        source: /api/*
+        destination: https://quizz-app-2-bn5d.onrender.com/api/*
       # Support for Single Page Application routing
       - type: rewrite
         source: /*
