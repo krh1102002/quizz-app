@@ -2699,3 +2699,139 @@ D) No, because amulets must be made of precious metals like gold.
 An object worn for its supposed protective powers is an amulet.
 
 ---
+
+---
+
+### Q142.
+
+"Ecosystem" is best defined as:
+
+A) A biological community of interacting organisms and their physical environment.
+B) A single species living in a specific geographic area.
+C) The study of weather patterns in a tropical region.
+D) A collection of non-living components like rocks and water.
+
+**Answer:** A
+
+**Explanation:** An ecosystem includes both biotic (living) and abiotic (non-living) components interacting as a system.
+
+---
+
+### Q143.
+
+"Inertia" in physics corresponds to:
+
+A) The tendency of an object to resist changes in its state of motion.
+B) The total energy possessed by a body in motion.
+C) The force of gravity acting on a stationary object.
+) The speed at which an object travels in a vacuum.
+
+**Answer:** A
+
+**Explanation:** Inertia is the property of matter by which it continues in its existing state of rest or uniform motion in a straight line, unless changed by an external force.
+
+---
+
+### Q144.
+
+"Inflation" in economics is:
+
+A) A general increase in prices and fall in the purchasing value of money.
+B) A decrease in the total amount of goods produced in a year.
+C) The rate at which the population grows in an urban area.
+D) The total debt owed by a government to foreign banks.
+
+**Answer:** A
+
+**Explanation:** Inflation reflects the reduction in purchasing power per unit of money – a loss of real value in the medium of exchange.
+
+---
+
+### Q145.
+
+"Paradox" is defined as:
+
+A) A seemingly absurd or self-contradictory statement that when investigated may prove to be true.
+B) A logical progression that leads to a single, obvious conclusion.
+C) A direct comparison between two unrelated objects using "like" or "as".
+D) A temporary suspension of a law or rule for a specific group.
+
+**Answer:** A
+
+**Explanation:** A paradox challenges intuition but often contains an underlying truth.
+
+---
+
+### Q146.
+
+"Sovereignty" refers to:
+
+A) Supreme power or authority of a state to govern itself.
+B) The wealth possessed by the royal family of a nation.
+C) The ability of a citizen to travel freely between countries.
+D) A legal agreement between two private businesses.
+
+**Answer:** A
+
+**Explanation:** Universal legal authority within a territory.
+
+---
+
+### Q147.
+
+"Metabolism" involves:
+
+A) The chemical processes that occur within a living organism in order to maintain life.
+B) The speed at which an animal can run over short distances.
+C) The structural arrangement of cells in a plant leaf.
+D) The psychological state of a person during sleep.
+
+**Answer:** A
+
+**Explanation:** These processes help in converting food to energy and building/repairing tissue.
+
+---
+
+### Q148.
+
+"Catalyst" in chemistry is a substance that:
+
+A) Increases the rate of a chemical reaction without undergoing permanent change.
+B) Slows down a reaction to prevent explosion.
+C) Changes the color of a solution when mixed with an acid.
+D) Dissolves completely in water to form a neutral solution.
+
+**Answer:** A
+
+**Explanation:** It lowers activation energy but is not consumed.
+
+---
+
+### Q149.
+
+"Monopoly" occurs when:
+
+A) A single seller or producer has exclusive control over a product or service.
+B) Many small businesses compete fairly in a global market.
+C) The government regulates all prices of consumer goods.
+D) Two companies agree to merge and share their profits equally.
+
+**Answer:** A
+
+**Explanation:** Exclusive control precludes competition.
+
+---
+
+### Q150.
+
+"Algorithm" is:
+
+A) A process or set of rules to be followed in calculations especially by a computer.
+B) A type of mathematical proof that uses geometric shapes.
+C) The physical hardware components inside a central processing unit.
+D) A random sequence of numbers used in statistical sampling.
+
+**Answer:** A
+
+**Explanation:** It provides a step-by-step solution to a problem.
+

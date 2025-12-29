@@ -50,6 +50,16 @@ const Formulas = () => {
     }
   };
 
+  const getTopicTheme = (topicName) => {
+    const themes = {
+      'Quantitative Aptitude': 'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400',
+      'Logical Reasoning': 'from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400',
+      'Data Interpretation': 'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-400',
+      'Verbal Ability': 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-400'
+    };
+    return themes[topicName] || 'from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-400';
+  };
+
   const openModal = async (subtopic) => {
     setSelectedSubtopic(subtopic);
     setLoadingModal(true);
@@ -135,15 +145,23 @@ const Formulas = () => {
           <div className="space-y-24">
             {filteredData.map((topic) => (
               <section key={topic._id} className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="flex items-center gap-4 mb-10 pb-4 border-b border-white/5">
-                  <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-3xl shadow-inner border border-white/10">
-                    {topic.icon}
+                <div className="flex items-center justify-between mb-10 pb-6 border-b border-white/5 group">
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-white/10 group-hover:scale-110 transition-transform duration-500">
+                      {topic.icon}
+                    </div>
+                    <div>
+                      <h2 className="text-4xl font-extrabold tracking-tighter text-white/90 group-hover:text-white transition-colors">{topic.name}</h2>
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="h-1 w-12 bg-indigo-500 rounded-full"></span>
+                        <p className="text-indigo-400 text-xs font-black uppercase tracking-[0.3em]">
+                          {topic.description || `${(topic.filteredSubs || subtopicsMap[topic._id] || []).length} Analytical Modules`}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-3xl font-bold tracking-tight">{topic.name}</h2>
-                    <p className="text-gray-500 text-sm font-medium uppercase tracking-widest mt-1">
-                      {topic.description || `${(topic.filteredSubs || subtopicsMap[topic._id] || []).length} Specialized Modules`}
-                    </p>
+                  <div className="hidden md:flex items-center gap-2 text-gray-600 text-[10px] font-black uppercase tracking-widest">
+                     Explore <ChevronRight className="w-4 h-4" />
                   </div>
                 </div>
 
@@ -152,32 +170,38 @@ const Formulas = () => {
                     <button
                       key={sub._id}
                       onClick={() => openModal(sub)}
-                      className="group relative text-left h-full"
+                      className="group relative text-left h-full perspective-1000"
                     >
-                      <div className="card-3d h-full p-6 bg-white/[0.03] border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer overflow-hidden flex flex-col justify-between min-h-[160px]">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                           <Calculator className="w-12 h-12" />
+                      <div className={`card-3d h-full p-8 bg-gradient-to-br ${getTopicTheme(topic.name).split(' ').slice(0,2).join(' ')} border border-white/5 hover:border-white/20 transition-all duration-500 cursor-pointer overflow-hidden flex flex-col justify-between min-h-[200px] backdrop-blur-md relative z-10 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}>
+                        <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-20 transition-opacity duration-700 -rotate-12 group-hover:rotate-0">
+                           <Calculator className="w-20 h-20" />
                         </div>
                         
-                        <div>
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                        <div className="relative z-20">
+                          <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70 group-hover:opacity-100 transition-opacity ${getTopicTheme(topic.name).split(' ').pop()}`}>
                             <Target className="w-3 h-3" />
-                            Module Path
+                            Secure Module
                           </div>
-                          <h3 className="text-xl font-bold group-hover:text-indigo-400 transition-colors leading-tight">
+                          <h3 className="text-2xl font-black group-hover:text-white transition-colors leading-tight tracking-tight">
                             {sub.name}
                           </h3>
                         </div>
 
-                        <div className="mt-6 flex items-center justify-between">
-                           <span className="text-xs text-gray-500 font-medium flex items-center gap-1 group-hover:text-gray-300 transition-colors">
-                             View Formulas <ArrowRight className="w-3 h-3 translate-x-0 group-hover:translate-x-1 transition-transform" />
-                           </span>
-                           <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
-                             <ChevronRight className="w-4 h-4 text-white" />
+                        <div className="mt-8 flex items-center justify-between relative z-20">
+                           <div className="flex flex-col">
+                             <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 group-hover:text-gray-400 transition-colors">Analytical Depth</span>
+                             <div className="flex gap-1">
+                                {[1,2,3,4,5].map(i => <div key={i} className={`h-1 w-3 rounded-full ${i <= 3 ? 'bg-indigo-500/40' : 'bg-white/5'}`}></div>)}
+                             </div>
+                           </div>
+                           <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500 rotate-45 group-hover:rotate-0 shadow-lg">
+                             <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform" />
                            </div>
                         </div>
                       </div>
+                      
+                      {/* Hover Glow Effect */}
+                      <div className="absolute -inset-2 bg-gradient-to-r from-indigo-500/0 via-indigo-500/10 to-purple-500/0 rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                     </button>
                   ))}
                 </div>

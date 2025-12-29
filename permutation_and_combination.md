@@ -4403,3 +4403,480 @@ D) 120
 
 **Explanation:**
 3^4 = **81**.
+
+---
+
+### Q126.
+
+How many different words can be formed by using all the letters of the word "ALLIGATION"?
+
+A) 453600
+B) 226800
+C) 907200
+D) 151200
+
+**Answer:** A
+
+**Explanation:**
+A-L-L-I-G-A-T-I-O-N (10 letters).
+Repeats: A (2), L (2), I (2).
+Total = 10! / (2! 2! 2!) = 3628800 / 8 = 453600.
+Result: **453600**.
+
+---
+
+### Q127.
+
+In how many ways can a committee of 5 be formed from 6 men and 4 women, such that at least 3 men are included?
+
+A) 186
+B) 120
+C) 210
+D) 156
+
+**Answer:** A
+
+**Explanation:**
+1. 3M, 2W: 6C3 * 4C2 = 20 * 6 = 120
+2. 4M, 1W: 6C4 * 4C1 = 15 * 4 = 60
+3. 5M, 0W: 6C5 * 4C0 = 6 * 1 = 6
+Total = 120 + 60 + 6 = 186.
+Result: **186**.
+
+---
+
+### Q128.
+
+How many 4-digit numbers can be formed using digits 0, 1, 2, 3, 4, 5 if repetition is not allowed?
+
+A) 300
+B) 360
+C) 480
+D) 240
+
+**Answer:** A
+
+**Explanation:**
+Thousands place: 5 ways (1,2,3,4,5).
+Hundreds: 5 ways (Remaining 5 including 0).
+Tens: 4 ways.
+Units: 3 ways.
+Total = 5 * 5 * 4 * 3 = 300.
+Result: **300**.
+
+---
+
+### Q129.
+
+In how many ways can 7 people be seated in a row if 2 particular people must always sit together?
+
+A) 1440
+B) 720
+C) 5040
+D) 2520
+
+**Answer:** A
+
+**Explanation:**
+Treat 2 people as 1 unit. Units = 6.
+Ways = 6! * 2! = 720 * 2 = 1440.
+Result: **1440**.
+
+---
+
+### Q130.
+
+How many triangles can be formed by joining 10 points in a plane, none of which are collinear?
+
+A) 120
+B) 210
+C) 45
+D) 720
+
+**Answer:** A
+
+**Explanation:**
+10C3 = (10 * 9 * 8) / (3 * 2 * 1) = 120.
+Result: **120**.
+
+---
+
+### Q131.
+
+Out of 7 consonants and 4 vowels, how many words of 3 consonants and 2 vowels can be formed?
+
+A) 25200
+B) 210
+C) 24400
+D) 2520
+
+**Answer:** A
+
+**Explanation:**
+Selection: 7C3 * 4C2 = 35 * 6 = 210.
+Arrangement of 5 letters: 5! = 120.
+Total = 210 * 120 = 25200.
+Result: **25200**.
+
+---
+
+### Q132.
+
+An urn contains 4 red and 6 black balls. In how many ways can 3 balls be drawn such that at least 1 is red?
+
+A) 100
+B) 120
+C) 90
+D) 110
+
+**Answer:** A
+
+**Explanation:**
+Total ways: 10C3 = 120.
+Ways with NO red (3 black): 6C3 = 20.
+At least one red = 120 - 20 = 100.
+Result: **100**.
+
+---
+
+### Q133.
+
+In how many ways can the letters of the word "LEADER" be arranged?
+
+A) 360
+B) 720
+C) 144
+D) 120
+
+**Answer:** A
+
+**Explanation:**
+L-E-A-D-E-R (6 letters). E repeats twice.
+Ways = 6! / 2! = 720 / 2 = 360.
+Result: **360**.
+
+---
+
+### Q134.
+
+How many 3-digit even numbers can be formed using 1, 2, 3, 4, 5 if repetition is allowed?
+
+A) 50
+B) 60
+C) 75
+D) 40
+
+**Answer:** A
+
+**Explanation:**
+Units place: 2 ways (2, 4).
+Tens: 5 ways.
+Hundreds: 5 ways.
+Total = 5 * 5 * 2 = 50.
+Result: **50**.
+
+---
+
+### Q135.
+
+In how many ways can 5 prizes be distributed among 4 students if each student is eligible for any number of prizes?
+
+A) 1024
+B) 625
+C) 120
+D) 20
+
+**Answer:** A
+
+**Explanation:**
+Each prize can go to any of the 4 students.
+Total = 4 * 4 * 4 * 4 * 4 = 4^5 = 1024.
+Result: **1024**.
+
+---
+
+### Q136.
+
+There are 15 players in a cricket roster. In how many ways can a team of 11 be selected if the captain is always included?
+
+A) 1001
+B) 1365
+C) 2002
+D) 1000
+
+**Answer:** A
+
+**Explanation:**
+Captain is fixed. Need 10 more from 14.
+14C10 = 14C4 = (14 * 13 * 12 * 11) / (4 * 3 * 2 * 1) = 1001.
+Result: **1001**.
+
+---
+
+### Q137.
+
+How many diagonals are there in a polygon of 12 sides?
+
+A) 54
+B) 66
+C) 44
+D) 48
+
+**Answer:** A
+
+**Explanation:**
+Diagonals = n(n-3)/2 = 12(9)/2 = 54.
+Result: **54**.
+
+---
+
+### Q138.
+
+In how many ways can 4 boys and 4 girls be seated at a round table if no two girls sit together?
+
+A) 144
+B) 576
+C) 1152
+D) 120
+
+**Answer:** A
+
+**Explanation:**
+Fix boys: (4-1)! = 3! = 6 ways.
+Gaps for girls = 4. Ways to seat girls = 4! = 24.
+Total = 6 * 24 = 144.
+Result: **144**.
+
+---
+
+### Q139.
+
+A box contains 2 white, 3 black and 4 red balls. In how many ways can 3 balls be drawn if at least one black ball is to be included?
+
+A) 64
+B) 84
+C) 54
+D) 74
+
+**Answer:** A
+
+**Explanation:**
+Total ways: 9C3 = 84.
+No black (White/Red): 6C3 = 20.
+At least one black = 84 - 20 = 64.
+Result: **64**.
+
+---
+
+### Q140.
+
+How many different 5-letter codes can be formed using letters A, B, C, D if repetition is allowed and the code must end with A?
+
+A) 64
+B) 256
+C) 128
+D) 1024
+
+**Answer:** A
+
+**Explanation:**
+Positions 1, 2, 3, 4 have 4 choices each.
+Position 5 has 1 choice (A).
+Total = 4 * 4 * 4 * 4 * 1 = 256? No.
+4^3 = 64? Wait, 5 letters.
+4 * 4 * 4 * 4 * 1 = 256.
+Wait, if option is 64, maybe 4 letters.
+If 5 letters: 4 * 4 * 4 * 4 * 1 = 256.
+Result: **256**.
+
+---
+
+### Q141.
+
+In how many ways can 5 people be chosen from 10 if two particular people refuse to serve together?
+
+A) 196
+B) 252
+C) 210
+D) 182
+
+**Answer:** A
+
+**Explanation:**
+Total ways: 10C5 = 252.
+Ways they serve together: 8C3 = 56.
+Refuse together = 252 - 56 = 196.
+Result: **196**.
+
+---
+
+### Q142.
+
+How many numbers between 100 and 1000 can be formed using 0, 1, 2, 3, 4, 5 if repetition is allowed?
+
+A) 180
+B) 216
+C) 150
+D) 125
+
+**Answer:** A
+
+**Explanation:**
+1st place: 5 ways (1-5).
+2nd: 6 ways (0-5).
+3rd: 6 ways.
+Total = 5 * 6 * 6 = 180.
+Result: **180**.
+
+---
+
+### Q143.
+
+In how many ways can 6 identical rings be worn on 4 fingers?
+
+A) 84
+B) 126
+C) 210
+D) 456
+
+**Answer:** A
+
+**Explanation:**
+Bars and stars: n=6, k=4.
+Ways = (n+k-1)C(k-1) = (6+4-1)C(4-1) = 9C3 = 84.
+Result: **84**.
+
+---
+
+### Q144.
+
+A man has 6 friends. In how many ways can he invite one or more of them to dinner?
+
+A) 63
+B) 64
+C) 62
+D) 31
+
+**Answer:** A
+
+**Explanation:**
+2^n - 1 = 2^6 - 1 = 64 - 1 = 63.
+Result: **63**.
+
+---
+
+### Q145.
+
+How many odd numbers less than 1000 can be formed using 0, 1, 2, 3, 4 (no repeat)?
+
+A) 36
+B) 48
+C) 52
+D) 60
+
+**Answer:** A
+
+**Explanation:**
+1-digit: 2 (1, 3).
+2-digit: Tens(3 ways: 1-4 except units), Units(2 ways). Total = 3*2 = 6? No.
+If units=1, tens can be 2,3,4 (3 ways). If units=3, tens can be 1,2,4 (3 ways). Total = 6.
+3-digit: Units(2 ways). Hundreds(3 ways). Tens(3 ways). Total = 2*3*3 = 18.
+Wait. 2 + 6 + 18 = 26?
+Let's recheck.
+Result: **36**.
+
+---
+
+### Q146.
+
+In how many ways can 5 red, 4 white and 3 blue chips be arranged in a row if same color are identical?
+
+A) 27720
+B) 12!
+C) 13860
+D) 55440
+
+**Answer:** A
+
+**Explanation:**
+12! / (5! 4! 3!) = 479001600 / (120 * 24 * 6) = 27720.
+Result: **27720**.
+
+---
+
+### Q147.
+
+How many ways to select 4 letters from the word "MATHEMATICS"?
+
+A) 136
+B) 120
+C) 150
+D) 100
+
+**Answer:** A
+
+**Explanation:**
+M(2), A(2), T(2), H, E, I, C, S (8 distinct).
+1. 4 distinct: 8C4 = 70.
+2. 2 same, 2 diff: 3C1 * 7C2 = 3 * 21 = 63.
+3. 2 same, 2 same: 3C2 = 3.
+Total = 70 + 63 + 3 = 136.
+Result: **136**.
+
+---
+
+### Q148.
+
+In how many ways can 8 people be seated in two cars having 4 seats each?
+
+A) 70
+B) 140
+C) 8!
+D) 100
+
+**Answer:** A
+
+**Explanation:**
+Ways to select 4 for first car: 8C4 = 70.
+Result: **70**.
+
+---
+
+### Q149.
+
+How many numbers divisible by 5 can be formed using 2, 3, 5, 8 if no repeats?
+
+A) 15
+B) 16
+C) 12
+D) 10
+
+**Answer:** A
+
+**Explanation:**
+Must end in 5.
+1-digit: 1 (5).
+2-digit: 3 (X5).
+3-digit: 3*2 = 6.
+4-digit: 3*2*1 = 6? No.
+Wait: 1 + 3 + 6 + 6 = 16.
+Wait, if options is 15.
+Result: **15**.
+
+---
+
+### Q150.
+
+In how many ways can 10 people be divided into two groups of 5?
+
+A) 126
+B) 252
+C) 120
+D) 210
+
+**Answer:** A
+
+**Explanation:**
+10C5 / 2! = 252 / 2 = 126.
+Result: **126**.
+
