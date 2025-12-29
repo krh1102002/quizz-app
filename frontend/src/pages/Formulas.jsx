@@ -11,7 +11,8 @@ import {
   ArrowRight,
   ExternalLink,
   ChevronRight,
-  Lightbulb
+  Lightbulb,
+  MousePointer2
 } from 'lucide-react';
 import { BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
@@ -21,6 +22,7 @@ const Formulas = () => {
   const [subtopicsMap, setSubtopicsMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTopicId, setActiveTopicId] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [modalData, setModalData] = useState(null);
   const [loadingModal, setLoadingModal] = useState(false);
@@ -33,10 +35,15 @@ const Formulas = () => {
     setLoading(true);
     try {
       const topicsData = await topicsAPI.getAll();
-      setTopics(Array.isArray(topicsData) ? topicsData : []);
+      const validTopics = Array.isArray(topicsData) ? topicsData : [];
+      setTopics(validTopics);
       
+      if (validTopics.length > 0) {
+        setActiveTopicId(validTopics[0]._id);
+      }
+
       const subMap = {};
-      const subPromises = topicsData.map(async (topic) => {
+      const subPromises = validTopics.map(async (topic) => {
         const subs = await subtopicsAPI.getByTopic(topic._id);
         subMap[topic._id] = Array.isArray(subs) ? subs : [];
       });
@@ -52,12 +59,42 @@ const Formulas = () => {
 
   const getTopicTheme = (topicName) => {
     const themes = {
-      'Quantitative Aptitude': 'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400',
-      'Logical Reasoning': 'from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400',
-      'Data Interpretation': 'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-400',
-      'Verbal Ability': 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-400'
+      'Quantitative Aptitude': {
+        accent: 'text-amber-400',
+        bg: 'bg-amber-500/10',
+        border: 'border-amber-500/20',
+        glow: 'shadow-[0_0_20px_rgba(245,158,11,0.2)]',
+        gradient: 'from-amber-500/20 via-amber-500/5 to-transparent'
+      },
+      'Logical Reasoning': {
+        accent: 'text-purple-400',
+        bg: 'bg-purple-500/10',
+        border: 'border-purple-500/20',
+        glow: 'shadow-[0_0_20px_rgba(168,85,247,0.2)]',
+        gradient: 'from-purple-500/20 via-purple-500/5 to-transparent'
+      },
+      'Data Interpretation': {
+        accent: 'text-blue-400',
+        bg: 'bg-blue-500/10',
+        border: 'border-blue-500/20',
+        glow: 'shadow-[0_0_20px_rgba(59,130,246,0.2)]',
+        gradient: 'from-blue-500/20 via-blue-500/5 to-transparent'
+      },
+      'Verbal Ability': {
+        accent: 'text-emerald-400',
+        bg: 'bg-emerald-500/10',
+        border: 'border-emerald-500/20',
+        glow: 'shadow-[0_0_20px_rgba(16,185,129,0.2)]',
+        gradient: 'from-emerald-500/20 via-emerald-500/5 to-transparent'
+      }
     };
-    return themes[topicName] || 'from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-400';
+    return themes[topicName] || {
+      accent: 'text-indigo-400',
+      bg: 'bg-indigo-500/10',
+      border: 'border-indigo-500/20',
+      glow: 'shadow-[0_0_20px_rgba(99,102,241,0.2)]',
+      gradient: 'from-indigo-500/20 via-indigo-500/5 to-transparent'
+    };
   };
 
   const openModal = async (subtopic) => {
@@ -78,181 +115,175 @@ const Formulas = () => {
     setModalData(null);
   };
 
-  const filteredData = useMemo(() => {
-    if (!searchQuery) return topics;
-    return topics.map(topic => {
-      const matchingSubs = (subtopicsMap[topic._id] || []).filter(sub => 
-        sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        topic.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      if (matchingSubs.length > 0) return { ...topic, filteredSubs: matchingSubs };
-      return null;
-    }).filter(t => t !== null);
-  }, [topics, subtopicsMap, searchQuery]);
+  const activeTopic = useMemo(() => 
+    topics.find(t => t._id === activeTopicId), 
+  [topics, activeTopicId]);
+
+  const activeSubtopics = useMemo(() => {
+    const subs = subtopicsMap[activeTopicId] || [];
+    if (!searchQuery) return subs;
+    return subs.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [subtopicsMap, activeTopicId, searchQuery]);
 
   const renderMathContent = (content) => {
     if (!content) return null;
-    const isLatex = content.includes('\\') || content.includes('$');
-    if (isLatex) {
-      return content.split('\n').map((line, idx) => (
+    const lines = content.split('\n');
+    return lines.map((line, idx) => {
+      const isLatex = line.includes('\\') || line.includes('$');
+      return (
         <div key={idx} className="my-4 formula-line text-lg">
-          {line.includes('\\') ? <BlockMath math={line} /> : <span className="text-gray-200">{line}</span>}
+          {isLatex ? <BlockMath math={line} /> : <span className="text-gray-300">{line}</span>}
         </div>
-      ));
-    }
-    return <p className="whitespace-pre-line text-gray-300 leading-relaxed text-lg">{content}</p>;
+      );
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#06080f] text-white pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500/30">
-      {/* Background Ambience */}
+    <div className="min-h-screen bg-[#05070a] text-white pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500/30">
+      {/* Immersive Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-indigo-600/5 rounded-full blur-[160px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[70%] bg-purple-600/5 rounded-full blur-[160px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <header className="text-center mb-20 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
-            <Sparkles className="w-4 h-4" />
-            Interactive Learning Library
+        <header className="mb-16 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            Adaptive Learning Environment
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8">
-            Conceptual <span className="gradient-text">Formulas</span>
+          <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-6">
+            Formula <span className="gradient-text">Laboratory</span>
           </h1>
-          <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-            A visual repository of technical shortcuts, mathematical derivations, and logical principles.
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+            Explore advanced conceptual frameworks through a streamlined, tab-driven interactive interface.
           </p>
-
-          <div className="relative max-w-2xl mx-auto group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
-            <div className="relative">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
-              <input 
-                type="text"
-                placeholder="Search subtopics, concepts, or rules..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0d111c] border border-white/10 rounded-2xl py-5 pl-16 pr-6 outline-none focus:border-indigo-500/30 text-lg transition-all shadow-2xl"
-              />
-            </div>
-          </div>
         </header>
 
-        {loading ? (
-          <GridLoadingSkeleton />
-        ) : (
-          <div className="space-y-24">
-            {filteredData.map((topic) => (
-              <section key={topic._id} className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="flex items-center justify-between mb-10 pb-6 border-b border-white/5 group">
-                  <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-white/10 group-hover:scale-110 transition-transform duration-500">
-                      {topic.icon}
-                    </div>
-                    <div>
-                      <h2 className="text-4xl font-extrabold tracking-tighter text-white/90 group-hover:text-white transition-colors">{topic.name}</h2>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="h-1 w-12 bg-indigo-500 rounded-full"></span>
-                        <p className="text-indigo-400 text-xs font-black uppercase tracking-[0.3em]">
-                          {topic.description || `${(topic.filteredSubs || subtopicsMap[topic._id] || []).length} Analytical Modules`}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="hidden md:flex items-center gap-2 text-gray-600 text-[10px] font-black uppercase tracking-widest">
-                     Explore <ChevronRight className="w-4 h-4" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {(topic.filteredSubs || subtopicsMap[topic._id] || []).map((sub) => (
-                    <button
-                      key={sub._id}
-                      onClick={() => openModal(sub)}
-                      className="group relative text-left h-full perspective-1000"
-                    >
-                      <div className={`card-3d h-full p-8 bg-gradient-to-br ${getTopicTheme(topic.name).split(' ').slice(0,2).join(' ')} border border-white/5 hover:border-white/20 transition-all duration-500 cursor-pointer overflow-hidden flex flex-col justify-between min-h-[200px] backdrop-blur-md relative z-10 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}>
-                        <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-20 transition-opacity duration-700 -rotate-12 group-hover:rotate-0">
-                           <Calculator className="w-20 h-20" />
-                        </div>
-                        
-                        <div className="relative z-20">
-                          <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70 group-hover:opacity-100 transition-opacity ${getTopicTheme(topic.name).split(' ').pop()}`}>
-                            <Target className="w-3 h-3" />
-                            Secure Module
-                          </div>
-                          <h3 className="text-2xl font-black group-hover:text-white transition-colors leading-tight tracking-tight">
-                            {sub.name}
-                          </h3>
-                        </div>
-
-                        <div className="mt-8 flex items-center justify-between relative z-20">
-                           <div className="flex flex-col">
-                             <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 group-hover:text-gray-400 transition-colors">Analytical Depth</span>
-                             <div className="flex gap-1">
-                                {[1,2,3,4,5].map(i => <div key={i} className={`h-1 w-3 rounded-full ${i <= 3 ? 'bg-indigo-500/40' : 'bg-white/5'}`}></div>)}
-                             </div>
-                           </div>
-                           <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500 rotate-45 group-hover:rotate-0 shadow-lg">
-                             <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform" />
-                           </div>
-                        </div>
-                      </div>
-                      
-                      {/* Hover Glow Effect */}
-                      <div className="absolute -inset-2 bg-gradient-to-r from-indigo-500/0 via-indigo-500/10 to-purple-500/0 rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            ))}
+        {/* Global Search */}
+        <div className="max-w-xl mx-auto mb-16 relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/50 to-purple-500/50 rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-500"></div>
+          <div className="relative">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-white transition-colors" />
+            <input 
+              type="text"
+              placeholder="Search across all modules..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-16 pr-6 outline-none focus:border-white/20 text-lg transition-all backdrop-blur-md"
+            />
           </div>
-        )}
+        </div>
+
+        {/* Topic Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {topics.map((topic) => (
+            <button
+              key={topic._id}
+              onClick={() => setActiveTopicId(topic._id)}
+              className={`px-8 py-3.5 rounded-2xl border font-bold text-sm uppercase tracking-widest transition-all duration-300 flex items-center gap-3
+                ${activeTopicId === topic._id 
+                  ? 'bg-white text-black border-white shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-105' 
+                  : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                }`}
+            >
+              <span className="text-lg">{topic.icon}</span>
+              {topic.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Subtopic Grid of Tabs */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="h-16 bg-white/5 rounded-2xl animate-pulse border border-white/10" />)}
+          </div>
+        ) : activeTopic ? (
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className={`p-8 rounded-[2.5rem] bg-gradient-to-br ${getTopicTheme(activeTopic.name).gradient} border ${getTopicTheme(activeTopic.name).border} backdrop-blur-sm`}>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 text-xl shadow-inner">
+                  {activeTopic.icon}
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black tracking-tight">{activeTopic.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`h-1 w-8 rounded-full ${getTopicTheme(activeTopic.name).bg.replace('/10', '/40')}`}></span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Select a subtopic pill below</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {activeSubtopics.map((sub) => (
+                  <button
+                    key={sub._id}
+                    onClick={() => openModal(sub)}
+                    className={`group relative text-left py-4 px-6 rounded-2xl border transition-all duration-300 hover:scale-[1.02] flex items-center justify-between
+                      bg-white/[0.02] border-white/5 hover:bg-white/5 hover:border-white/20
+                    `}
+                  >
+                    <span className="font-extrabold text-sm tracking-tight text-gray-300 group-hover:text-white transition-colors truncate pr-4">
+                      {sub.name}
+                    </span>
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all group-hover:bg-white group-hover:text-black opacity-30 group-hover:opacity-100`}>
+                      <MousePointer2 className="w-4 h-4" />
+                    </div>
+                  </button>
+                ))}
+                {activeSubtopics.length === 0 && (
+                  <div className="col-span-full py-12 text-center text-gray-600 font-bold uppercase tracking-widest italic decoration-dashed underline underline-offset-8">
+                    No matching subtopics found in this category
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {/* Premium Formula Modal */}
+      {/* Extreme Blur Formula Modal */}
       {selectedSubtopic && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-10">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-xl transition-opacity animate-in fade-in duration-300" 
+            className="absolute inset-0 bg-black/60 backdrop-blur-[40px] transition-opacity animate-in fade-in duration-500" 
             onClick={closeModal}
           />
           
-          <div className="relative w-full max-w-5xl max-h-[85vh] bg-[#0d101c] border border-white/10 rounded-[2.5rem] shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-4xl max-h-[85vh] bg-[#0d101c] border border-white/10 rounded-[3rem] shadow-[0_0_100px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
-            <div className="p-8 pb-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-br from-indigo-500/5 to-transparent relative">
-              <div className="flex items-center gap-6">
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-4xl shadow-glow border border-white/10">
-                  {selectedSubtopic.icon || '📚'}
+            <div className="p-10 pb-6 flex items-center justify-between border-b border-white/5 relative bg-gradient-to-b from-white/[0.02] to-transparent">
+              <div className="flex items-center gap-8">
+                <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-5xl shadow-2xl border border-white/10 ${getTopicTheme(activeTopic?.name).bg}`}>
+                  {selectedSubtopic.icon || '📘'}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1.5">
-                    <Layers className="w-3.5 h-3.5" />
-                    Conceptual Module
+                  <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] mb-2 ${getTopicTheme(activeTopic?.name).accent}`}>
+                    <Target className="w-4 h-4" />
+                    Deep Logic Module
                   </div>
-                  <h2 className="text-3xl font-extrabold tracking-tight">{selectedSubtopic.name}</h2>
+                  <h2 className="text-4xl font-black tracking-tighter">{selectedSubtopic.name}</h2>
                 </div>
               </div>
               <button 
                 onClick={closeModal}
-                className="w-12 h-12 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center transition-all group active:scale-95"
+                className="w-14 h-14 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center transition-all group active:scale-95"
               >
                 <X className="w-6 h-6 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar">
               {loadingModal ? (
-                <div className="h-64 flex flex-col items-center justify-center gap-4">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-                  <p className="text-indigo-400 font-bold uppercase tracking-widest text-xs">Accessing Knowledge...</p>
+                <div className="h-64 flex flex-col items-center justify-center gap-6">
+                  <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+                  <p className="text-gray-500 font-black uppercase tracking-[0.5em] text-[10px]">Processing Data</p>
                 </div>
               ) : modalData ? (
                 <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="p-8 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 text-gray-400 leading-relaxed italic text-lg text-center backdrop-blur-sm shadow-inner">
-                    "{modalData.description || `Master the principles and technical derivations of ${selectedSubtopic.name}.`}"
+                  <div className="p-8 rounded-[2rem] bg-white/[0.01] border border-white/5 text-gray-400 leading-relaxed italic text-lg text-center backdrop-blur-md">
+                    {modalData.description || `High-level conceptual breakdown and strategy for ${selectedSubtopic.name}.`}
                   </div>
 
                   {modalData.formulas && modalData.formulas.length > 0 ? (
@@ -260,34 +291,34 @@ const Formulas = () => {
                       {modalData.formulas.map((formula, idx) => (
                         <div key={idx} className="group/formula relative">
                           <div className="flex items-center gap-4 mb-8">
-                             <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-base font-bold text-indigo-400 shadow-inner">
+                             <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center text-sm font-black shadow-inner ${getTopicTheme(activeTopic?.name).bg} ${getTopicTheme(activeTopic?.name).border} ${getTopicTheme(activeTopic?.name).accent}`}>
                                {String(idx + 1).padStart(2, '0')}
                              </div>
-                             <h3 className="text-2xl font-bold tracking-tight text-white group-hover/formula:text-indigo-400 transition-colors uppercase tracking-tight">
+                             <h3 className="text-2xl font-black tracking-tight text-white group-hover/formula:text-white transition-colors uppercase">
                                {formula.title}
                              </h3>
                           </div>
 
                           <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                            <div className="xl:col-span-8 bg-black/40 rounded-[2.5rem] p-12 border border-white/5 relative overflow-hidden group/math shadow-inner">
-                               <div className="absolute top-4 right-8 text-[10px] uppercase font-black text-white/5 tracking-[0.3em] group-hover/math:text-indigo-500/20 transition-colors">Technical Notation</div>
-                               <div className="math-container">
+                            <div className="xl:col-span-12 bg-black/40 rounded-[2.5rem] p-12 border border-white/5 relative overflow-hidden shadow-inner hover:border-white/10 transition-colors">
+                               <div className="absolute top-4 right-8 text-[10px] font-black text-white/5 tracking-[0.4em] uppercase">Formal Notation</div>
+                               <div className="math-container relative z-10">
                                  {renderMathContent(formula.content)}
                                </div>
                             </div>
 
                             {formula.example && (
-                              <div className="xl:col-span-4 rounded-[2.5rem] bg-amber-500/[0.03] border border-amber-500/10 p-10 relative hover:bg-amber-500/[0.06] transition-colors group/tip flex flex-col justify-center">
-                                <div className="absolute top-6 right-8">
-                                  <Sparkles className="w-5 h-5 text-amber-500/20 group-hover/tip:text-amber-500 transition-colors" />
+                              <div className="xl:col-span-12 rounded-[2.5rem] bg-indigo-500/[0.02] border border-indigo-500/10 p-10 relative hover:bg-indigo-500/[0.05] transition-colors group/tip">
+                                <div className="absolute top-6 right-10">
+                                  <Sparkles className="w-5 h-5 text-indigo-500/20 group-hover/tip:text-indigo-500 transition-colors" />
                                 </div>
-                                <div className="flex items-center gap-2 mb-6">
-                                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                                    <Lightbulb className="w-6 h-6 text-amber-500" />
+                                <div className="flex items-center gap-2 mb-6 text-indigo-400 font-black uppercase tracking-[0.2em] text-xs">
+                                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                    <Lightbulb className="w-5 h-5" />
                                   </div>
-                                  <span className="text-sm font-black text-amber-500 uppercase tracking-widest">Strategy</span>
+                                  Tactical Application
                                 </div>
-                                <div className="text-gray-400 text-lg leading-relaxed italic border-l-2 border-amber-500/20 pl-6">
+                                <div className="text-gray-300 text-lg leading-relaxed italic border-l-4 border-indigo-500/30 pl-8">
                                   {formula.example}
                                 </div>
                               </div>
@@ -297,32 +328,22 @@ const Formulas = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="py-20 text-center opacity-30">
+                    <div className="py-20 text-center opacity-30 animate-pulse">
                       <Calculator className="w-20 h-20 mx-auto mb-6" />
-                      <h4 className="text-2xl font-bold">Concept Library Empty</h4>
+                      <h4 className="text-2xl font-black uppercase tracking-widest">Awaiting Content</h4>
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="py-20 text-center text-red-400 font-bold">
-                  Failed to load conceptual data.
-                </div>
-              )}
+              ) : null}
             </div>
 
             {/* Modal Footer */}
-            <div className="p-8 py-6 border-t border-white/5 bg-white/[0.02] flex items-center justify-between text-[10px] text-gray-500 font-black tracking-widest uppercase">
-              <div className="flex items-center gap-8">
-                <span className="flex items-center gap-2 group cursor-help hover:text-indigo-400 transition-colors">
-                  <Target className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> 
-                  Academic Precision
-                </span>
-                <span className="flex items-center gap-2 group cursor-help hover:text-indigo-400 transition-colors">
-                  <ExternalLink className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> 
-                  Reference Verified
-                </span>
+            <div className="p-10 py-6 border-t border-white/5 bg-white/[0.02] flex items-center justify-between text-[10px] text-gray-500 font-black tracking-[0.3em] uppercase">
+              <div className="flex items-center gap-12">
+                <span className="flex items-center gap-2"><Target className="w-4 h-4" /> Cognitive Ready</span>
+                <span className="flex items-center gap-2"><ArrowRight className="w-4 h-4" /> Logic System v4.0</span>
               </div>
-              <div className="text-indigo-400/40">Antigravity AI Conceptual Lab</div>
+              <div className="text-white/20">Antigravity Design Lab</div>
             </div>
           </div>
         </div>
@@ -330,23 +351,5 @@ const Formulas = () => {
     </div>
   );
 };
-
-const GridLoadingSkeleton = () => (
-  <div className="space-y-24">
-    {[1, 2].map(s => (
-      <div key={s} className="animate-pulse">
-        <div className="flex items-center gap-4 mb-10 pb-4 border-b border-white/5">
-          <div className="w-12 h-12 bg-white/5 rounded-xl" />
-          <div className="h-8 w-64 bg-white/5 rounded-lg" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-44 bg-white/5 rounded-[2rem] border border-white/5" />
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-);
 
 export default Formulas;

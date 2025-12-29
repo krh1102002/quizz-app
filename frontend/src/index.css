@@ -1376,3 +1376,48 @@ a:hover {
   -webkit-text-fill-color: transparent;
 }
 
+
+/* --- Tabbed Formulas UI Extensions --- */
+
+/* Scrollbar for Modal and Tabs */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tab Active Transitions */
+.tab-active-glow {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+/* Modal Deep Blur */
+.backdrop-blur-40 {
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+/* Animation for Tab Selection */
+.topic-tab-enter {
+  animation: tabScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tabScale {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.subtopic-pill-hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
