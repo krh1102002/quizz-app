@@ -1,9 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = 'https://quizz-app-2-bn5d.onrender.com/api';
 
 // Helper function for API calls
 async function apiCall(endpoint, options = {}) {
   const token = localStorage.getItem('token');
-  
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -15,11 +15,11 @@ async function apiCall(endpoint, options = {}) {
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, config);
-    
+
     // Check if the response content type is JSON
     const contentType = response.headers.get('content-type');
     const isJson = contentType && contentType.includes('application/json');
-    
+
     // Only try to parse JSON if the content type is JSON
     let data;
     if (isJson) {
@@ -50,14 +50,14 @@ export const authAPI = {
     method: 'POST',
     body: JSON.stringify(userData),
   }),
-  
+
   login: (credentials) => apiCall('/auth/login', {
     method: 'POST',
     body: JSON.stringify(credentials),
   }),
-  
+
   getMe: () => apiCall('/auth/me'),
-  
+
   updateProfile: (data) => apiCall('/auth/profile', {
     method: 'PUT',
     body: JSON.stringify(data),
