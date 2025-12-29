@@ -12,10 +12,16 @@ export default function Home() {
       topicsAPI.getAll(),
       quizzesAPI.getAll({ limit: 6 })
     ]).then(([topicsData, quizzesData]) => {
-      setTopics(topicsData);
-      setFeaturedQuizzes(quizzesData);
-    }).catch(console.error)
-    .finally(() => setLoading(false));
+      // Ensure the data is an array before setting state
+      setTopics(Array.isArray(topicsData) ? topicsData : []);
+      setFeaturedQuizzes(Array.isArray(quizzesData) ? quizzesData : []);
+    }).catch((error) => {
+      console.error('Error fetching data:', error);
+      // Set empty arrays on error
+      setTopics([]);
+      setFeaturedQuizzes([]);
+    })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -28,7 +34,7 @@ export default function Home() {
             <span className="gradient-text">QuizMaster</span>
           </h1>
           <p className="hero-subtitle">
-            Challenge yourself with thousands of quizzes across various topics. 
+            Challenge yourself with thousands of quizzes across various topics.
             Learn, compete, and track your progress in a stunning 3D experience.
           </p>
           <div className="hero-actions">
@@ -40,7 +46,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        
+
         {/* Floating decorative elements */}
         <div className="hero-decorations" style={{
           position: 'absolute',
@@ -68,7 +74,7 @@ export default function Home() {
             <h2>Explore Topics</h2>
             <p className="text-secondary">Choose a topic and test your expertise</p>
           </div>
-          
+
           {loading ? (
             <div className="flex flex-center">
               <div className="spinner"></div>
@@ -76,8 +82,8 @@ export default function Home() {
           ) : (
             <div className="grid grid-3 gap-lg">
               {topics.map(topic => (
-                <Link 
-                  key={topic._id} 
+                <Link
+                  key={topic._id}
                   to={`/topics/${topic._id}`}
                   className="topic-card"
                   style={{ '--topic-color': topic.color }}
@@ -102,7 +108,7 @@ export default function Home() {
               View All →
             </Link>
           </div>
-          
+
           {loading ? (
             <div className="flex flex-center">
               <div className="spinner"></div>
@@ -111,7 +117,7 @@ export default function Home() {
             <div className="grid grid-3 gap-lg">
               {featuredQuizzes.map(quiz => (
                 <Link key={quiz._id} to={`/quiz/${quiz._id}`} className="quiz-card card-3d">
-                  <div 
+                  <div
                     className="quiz-card-icon"
                     style={{ background: quiz.topic?.color ? `${quiz.topic.color}20` : undefined }}
                   >
@@ -164,7 +170,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="section">
         <div className="container">
-          <div className="card" style={{ 
+          <div className="card" style={{
             padding: 'var(--space-3xl)',
             background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1))',
             textAlign: 'center'

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   PieChart, Pie, Cell, Legend
@@ -11,17 +11,18 @@ export default function Analytics() {
   const [stats, setStats] = useState(null);
   const [attempts, setAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     Promise.all([
       attemptsAPI.getStats(),
       attemptsAPI.getUserAttempts()
     ]).then(([statsData, attemptsData]) => {
       setStats(statsData);
-      setAttempts(attemptsData);
+      setAttempts(Array.isArray(attemptsData) ? attemptsData : []);
       setLoading(false);
     }).catch(err => {
-      console.error(err);
+      console.error('Error fetching analytics:', err);
+      setAttempts([]);
       setLoading(false);
     });
   }, []);
@@ -66,7 +67,7 @@ export default function Analytics() {
     const capitalized = diff.charAt(0).toUpperCase() + diff.slice(1);
     if (difficultyMap[capitalized] !== undefined) difficultyMap[capitalized]++;
   });
-  
+
   const difficultyData = Object.keys(difficultyMap).map(key => ({
     name: key,
     value: difficultyMap[key]
@@ -116,7 +117,7 @@ export default function Analytics() {
 
         {/* Charts Section */}
         <div className="grid grid-2 mb-3xl">
-          
+
           {/* Performance Trend */}
           <div className="card chart-card">
             <h3 className="mb-xl">Performance Trend</h3>
@@ -125,14 +126,14 @@ export default function Analytics() {
                 <AreaChart data={trendData}>
                   <defs>
                     <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickFormatter={(val) => val.split('/')[0] + '/' + val.split('/')[1]} />
                   <YAxis stroke="#94a3b8" fontSize={12} domain={[0, 100]} />
-                  <Tooltip 
+                  <Tooltip
                     contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
                     itemStyle={{ color: '#e2e8f0' }}
                   />
@@ -144,27 +145,27 @@ export default function Analytics() {
 
           {/* User Topic Radar */}
           <div className="card chart-card">
-             <h3 className="mb-xl">Topic Strength</h3>
-             <div className="chart-container">
-               {topicData.length > 0 ? (
-                 <ResponsiveContainer width="100%" height={300}>
-                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={topicData}>
-                     <PolarGrid stroke="rgba(255,255,255,0.2)" />
-                     <PolarAngleAxis dataKey="topic" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                     <Radar name="Score" dataKey="score" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-                     <Tooltip 
-                       contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                       itemStyle={{ color: '#e2e8f0' }}
-                     />
-                   </RadarChart>
-                 </ResponsiveContainer>
-               ) : (
-                 <div className="flex flex-center h-full text-secondary">
-                   Not enough data yet
-                 </div>
-               )}
-             </div>
+            <h3 className="mb-xl">Topic Strength</h3>
+            <div className="chart-container">
+              {topicData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={topicData}>
+                    <PolarGrid stroke="rgba(255,255,255,0.2)" />
+                    <PolarAngleAxis dataKey="topic" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                    <Radar name="Score" dataKey="score" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+                    <Tooltip
+                      contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                      itemStyle={{ color: '#e2e8f0' }}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-center h-full text-secondary">
+                  Not enough data yet
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -185,9 +186,9 @@ export default function Analytics() {
                   <span className="font-bold">{t.score}%</span>
                 </div>
                 <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ 
+                  <div
+                    className="progress-fill"
+                    style={{
                       width: `${t.score}%`,
                       background: t.score >= 80 ? 'var(--success)' : t.score >= 60 ? 'var(--warning)' : 'var(--error)'
                     }}
@@ -197,56 +198,56 @@ export default function Analytics() {
             </div>
           ))}
           {topicData.length === 0 && (
-             <div className="col-span-4 text-center text-secondary py-lg">
-               Take quizzes to see topic insights.
-             </div>
+            <div className="col-span-4 text-center text-secondary py-lg">
+              Take quizzes to see topic insights.
+            </div>
           )}
         </div>
 
         {/* Recent Attempts Table */}
         <div className="card w-full mb-3xl p-xl">
-           <h3 className="mb-lg">Recent Attempts</h3>
-           <div className="table-responsive">
-             <table className="table">
-               <thead>
-                 <tr>
-                   <th>Date</th>
-                   <th>Quiz</th>
-                   <th>Topic</th>
-                   <th>Score</th>
-                   <th>Status</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 {attempts.slice(0, 5).map((attempt) => (
-                   <tr key={attempt._id}>
-                     <td>{new Date(attempt.createdAt).toLocaleDateString()}</td>
-                     <td>{attempt.quiz?.title}</td>
-                     <td>
-                       <span className="badge badge-primary">{attempt.quiz?.topic?.name}</span>
-                     </td>
-                     <td className="font-bold">{attempt.percentage}%</td>
-                     <td>
-                       {attempt.percentage >= 80 ? <span className="badge badge-success">Excellent</span> :
+          <h3 className="mb-lg">Recent Attempts</h3>
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Quiz</th>
+                  <th>Topic</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {attempts.slice(0, 5).map((attempt) => (
+                  <tr key={attempt._id}>
+                    <td>{new Date(attempt.createdAt).toLocaleDateString()}</td>
+                    <td>{attempt.quiz?.title}</td>
+                    <td>
+                      <span className="badge badge-primary">{attempt.quiz?.topic?.name}</span>
+                    </td>
+                    <td className="font-bold">{attempt.percentage}%</td>
+                    <td>
+                      {attempt.percentage >= 80 ? <span className="badge badge-success">Excellent</span> :
                         attempt.percentage >= 60 ? <span className="badge badge-warning">Good</span> :
-                        <span className="badge badge-error">Needs Improvement</span>}
-                     </td>
-                   </tr>
-                 ))}
-                 {attempts.length === 0 && (
-                   <tr>
-                     <td colSpan="5" className="text-center py-xl text-secondary">No attempts yet.</td>
-                   </tr>
-                 )}
-               </tbody>
-             </table>
-           </div>
+                          <span className="badge badge-error">Needs Improvement</span>}
+                    </td>
+                  </tr>
+                ))}
+                {attempts.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="text-center py-xl text-secondary">No attempts yet.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Call to Action */}
         <div className="text-center">
-           <p className="mb-lg text-secondary">Want to improve your statistics?</p>
-           <a href="/quizzes" className="btn btn-primary btn-lg">Take a Quiz</a>
+          <p className="mb-lg text-secondary">Want to improve your statistics?</p>
+          <a href="/quizzes" className="btn btn-primary btn-lg">Take a Quiz</a>
         </div>
       </div>
     </div>

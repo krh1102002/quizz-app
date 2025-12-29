@@ -1,9 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = 'https://quizz-app-2-bn5d.onrender.com/api';
 
 // Helper function for API calls
 async function apiCall(endpoint, options = {}) {
   const token = localStorage.getItem('token');
-  
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -13,14 +13,35 @@ async function apiCall(endpoint, options = {}) {
     ...options,
   };
 
-  const response = await fetch(`${API_URL}${endpoint}`, config);
-  const data = await response.json();
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, config);
 
-  if (!response.ok) {
-    throw new Error(data.error || 'Something went wrong');
+    // Check if the response content type is JSON
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType && contentType.includes('application/json');
+
+    // Only try to parse JSON if the content type is JSON
+    let data;
+    if (isJson) {
+      data = await response.json();
+    } else {
+      // If not JSON, get text for better error messages
+      const text = await response.text();
+      data = { error: text || 'Server returned non-JSON response' };
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return data;
+  } catch (error) {
+    // Handle network errors or JSON parsing errors
+    if (error.message.includes('Failed to fetch')) {
+      throw new Error('Network error: Unable to connect to server. Please check if the backend is running.');
+    }
+    throw error;
   }
-
-  return data;
 }
 
 // Auth API
@@ -29,14 +50,14 @@ export const authAPI = {
     method: 'POST',
     body: JSON.stringify(userData),
   }),
-  
+
   login: (credentials) => apiCall('/auth/login', {
     method: 'POST',
     body: JSON.stringify(credentials),
   }),
-  
+
   getMe: () => apiCall('/auth/me'),
-  
+
   updateProfile: (data) => apiCall('/auth/profile', {
     method: 'PUT',
     body: JSON.stringify(data),

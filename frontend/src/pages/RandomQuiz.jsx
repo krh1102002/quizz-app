@@ -17,7 +17,8 @@ export default function RandomQuiz() {
     try {
       // 1. Find the "Mixed Aptitude" topic
       const topics = await topicsAPI.getAll();
-      const mixedTopic = topics.find(t => t.name === 'Mixed Aptitude' || t.name === 'Random / Mixed');
+      const topicsArray = Array.isArray(topics) ? topics : [];
+      const mixedTopic = topicsArray.find(t => t.name === 'Mixed Aptitude' || t.name === 'Random / Mixed');
 
       if (!mixedTopic) {
         setError('No mixed aptitude section found.');
@@ -26,9 +27,11 @@ export default function RandomQuiz() {
 
       // 2. Fetch quizzes for this topic
       const quizzes = await quizzesAPI.getByTopic(mixedTopic._id);
-      setMixedQuizzes(quizzes);
+      setMixedQuizzes(Array.isArray(quizzes) ? quizzes : []);
     } catch (err) {
-      setError(err.message);
+      console.error('Error fetching mixed quizzes:', err);
+      setError(err.message || 'Failed to load quizzes. Please try again.');
+      setMixedQuizzes([]);
     } finally {
       setLoading(false);
     }
@@ -84,9 +87,9 @@ export default function RandomQuiz() {
                     {quiz.quizType === 'long' ? 'FULL LENGTH' : 'MINI MOCK'}
                   </span>
                 </div>
-                
+
                 <p className="quiz-desc">{quiz.description}</p>
-                
+
                 <div className="preview-stats">
                   <div className="preview-stat">
                     <span className="stat-value">{quiz.questions?.length || 0}</span>
@@ -102,8 +105,8 @@ export default function RandomQuiz() {
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => startQuiz(quiz)} 
+                <button
+                  onClick={() => startQuiz(quiz)}
                   className="start-btn"
                 >
                   🚀 Start Test
