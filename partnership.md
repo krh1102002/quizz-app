@@ -2890,3 +2890,23 @@ B: 3 * 12 = 36.
 Ratio 18:36 = 1:2.
 
 ---
+
+---
+
+### Q150.
+
+A and B invest in a business in the ratio 3 : 2. If 5% of the total profit goes to charity and A's share is Rs. 855, the total profit is:
+
+A) Rs. 1425
+B) Rs. 1500
+C) Rs. 1537.50
+D) Rs. 1576
+
+**Answer:** B
+
+**Explanation:**
+Ratio of investment = 3 : 2. Let total profit be $P$.
+Profit after charity = $0.95P$.
+A's share = $\frac{3}{5} \times 0.95P$.
+$0.57P = 855 \implies P = 855 / 0.57 = 1500$.
+
