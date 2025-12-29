@@ -17,14 +17,20 @@ export default function Topics() {
         subtopicsAPI.getByTopic(topicId)
       ]).then(([topic, subtopicsData]) => {
         setSelectedTopic(topic);
-        setSubtopics(subtopicsData);
-      }).catch(console.error)
-      .finally(() => setLoading(false));
+        setSubtopics(Array.isArray(subtopicsData) ? subtopicsData : []);
+      }).catch((error) => {
+        console.error('Error fetching topic data:', error);
+        setSubtopics([]);
+      })
+        .finally(() => setLoading(false));
     } else {
       // Load all topics
       topicsAPI.getAll()
-        .then(setTopics)
-        .catch(console.error)
+        .then((data) => setTopics(Array.isArray(data) ? data : []))
+        .catch((error) => {
+          console.error('Error fetching topics:', error);
+          setTopics([]);
+        })
         .finally(() => setLoading(false));
     }
   }, [topicId]);
@@ -46,7 +52,7 @@ export default function Topics() {
           <Link to="/topics" className="btn btn-ghost mb-lg">
             ← Back to All Topics
           </Link>
-          
+
           <div className="text-center mb-2xl">
             <div style={{ fontSize: '4rem', marginBottom: 'var(--space-md)' }}>
               {selectedTopic.icon}
@@ -65,9 +71,9 @@ export default function Topics() {
           ) : (
             <div className="grid grid-3 gap-lg">
               {subtopics.map(subtopic => (
-                <Link 
-                  key={subtopic._id} 
-                  to={`/subtopic/${subtopic._id}`} 
+                <Link
+                  key={subtopic._id}
+                  to={`/subtopic/${subtopic._id}`}
                   className="topic-card"
                   style={{ '--topic-color': selectedTopic.color }}
                 >
@@ -101,8 +107,8 @@ export default function Topics() {
 
         <div className="grid grid-3 gap-lg">
           {topics.map(topic => (
-            <Link 
-              key={topic._id} 
+            <Link
+              key={topic._id}
               to={`/topics/${topic._id}`}
               className="topic-card"
               style={{ '--topic-color': topic.color }}

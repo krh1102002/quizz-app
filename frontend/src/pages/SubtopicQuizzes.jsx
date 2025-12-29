@@ -14,9 +14,12 @@ export default function SubtopicQuizzes() {
       quizzesAPI.getBySubtopic(subtopicId)
     ]).then(([subtopicData, quizzesData]) => {
       setSubtopic(subtopicData);
-      setQuizzes(quizzesData);
-    }).catch(console.error)
-    .finally(() => setLoading(false));
+      setQuizzes(Array.isArray(quizzesData) ? quizzesData : []);
+    }).catch((error) => {
+      console.error('Error fetching subtopic data:', error);
+      setQuizzes([]);
+    })
+      .finally(() => setLoading(false));
   }, [subtopicId]);
 
   if (loading) {
@@ -36,7 +39,7 @@ export default function SubtopicQuizzes() {
         <Link to={`/topics/${subtopic.topic}`} className="btn btn-ghost mb-lg">
           ← Back to Subtopics
         </Link>
-        
+
         <div className="text-center mb-2xl">
           <div style={{ fontSize: '3rem', marginBottom: 'var(--space-md)' }}>
             {subtopic.icon || '📝'}
@@ -50,10 +53,10 @@ export default function SubtopicQuizzes() {
             <Link key={quiz._id} to={`/quiz/${quiz._id}`} className="quiz-card card-3d card-glow">
               <h3 className="quiz-card-title">{quiz.title}</h3>
               <p className="quiz-card-desc">{quiz.description}</p>
-              
+
               <div className="quiz-card-meta">
                 <span>
-                 {quiz.quizType === 'long' ? '📝 Full Test' : '⚡ Practice'}
+                  {quiz.quizType === 'long' ? '📝 Full Test' : '⚡ Practice'}
                 </span>
                 <span>⏱️ {Math.floor(quiz.timeLimit / 60)} min</span>
               </div>
