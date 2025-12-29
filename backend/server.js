@@ -9,6 +9,7 @@ import quizRoutes from './routes/quizRoutes.js';
 import topicRoutes from './routes/topicRoutes.js';
 import subtopicRoutes from './routes/subtopicRoutes.js';
 import attemptRoutes from './routes/attemptRoutes.js';
+import healthRoutes from './routes/healthRoutes.js';
 
 dotenv.config();
 
@@ -32,9 +33,7 @@ app.use('/api/subtopics', subtopicRoutes);
 app.use('/api/attempts', attemptRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Quiz API is running!' });
-});
+app.use('/api/health', healthRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

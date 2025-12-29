@@ -83,9 +83,7 @@ export default function Home() {
                   style={{ '--topic-color': topic.color }}
                 >
                   <div className="topic-icon">{topic.icon}</div>
-                  <h3 className="topic-name">{topic.name}</h3>
-                  <p className="topic-count">{topic.quizCount} quizzes</p>
-                </Link>
+                  <h3 className="topic-name">{topic.name}</h3>                </Link>
               ))}
             </div>
           )}
