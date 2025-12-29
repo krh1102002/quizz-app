@@ -142,49 +142,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      {/* Stats Section */}
-      <section className="section">
-        <div className="container">
-          <div className="grid grid-4 gap-xl text-center">
-            <div className="stat">
-              <div className="stat-value gradient-text">1000+</div>
-              <div className="stat-label">Questions</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value gradient-text">50+</div>
-              <div className="stat-label">Topics</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value gradient-text">10K+</div>
-              <div className="stat-label">Quiz Attempts</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value gradient-text">5K+</div>
-              <div className="stat-label">Happy Users</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section">
-        <div className="container">
-          <div className="card" style={{
-            padding: 'var(--space-3xl)',
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1))',
-            textAlign: 'center'
-          }}>
-            <h2 className="mb-md">Ready to Challenge Yourself?</h2>
-            <p className="text-secondary mb-xl" style={{ maxWidth: '500px', margin: '0 auto var(--space-xl)' }}>
-              Join thousands of quiz enthusiasts and start your learning journey today!
-            </p>
-            <Link to="/register" className="btn btn-primary btn-lg">
-              Get Started Free
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
