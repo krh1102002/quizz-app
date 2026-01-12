@@ -80,6 +80,8 @@ export default function QuizAttempt() {
         : a
     );
 
+    console.log('🟢 Submitting Answers:', finalAnswers);
+
     if (isAuthenticated) {
       try {
         const result = await attemptsAPI.submit({
@@ -130,6 +132,11 @@ export default function QuizAttempt() {
   };
 
   const selectOption = (optionIndex) => {
+    console.log('🔵 Select Option:', { 
+      questionIndex: currentQuestion, 
+      optionIndex, 
+      optionText: quiz.questions[currentQuestion].options[optionIndex] 
+    });
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = { 
       ...newAnswers[currentQuestion], 

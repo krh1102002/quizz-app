@@ -1,4 +1,6 @@
-const API_URL = 'https://quizz-app-2-bn5d.onrender.com/api';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api'
+  : 'https://quizz-app-2-bn5d.onrender.com/api';
 
 // Helper function for API calls
 async function apiCall(endpoint, options = {}) {

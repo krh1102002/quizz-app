@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { topicsAPI, subtopicsAPI } from "../services/api";
-import {
-  Calculator,
-  Search,
+import React, { useState, useEffect, useMemo } from 'react';
+import { topicsAPI, subtopicsAPI } from '../services/api';
+import { 
+  Calculator, 
+  Search, 
   X,
   Target,
   Layers,
@@ -16,17 +16,17 @@ import {
   BarChart3,
   Globe,
   Info,
-  Zap,
-} from "lucide-react";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
+  ChevronLeft
+} from 'lucide-react';
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
 
 const Formulas = () => {
-  const [view, setView] = useState("topics"); // 'topics' or 'subtopics'
+  const [view, setView] = useState('topics'); // 'topics' or 'subtopics'
   const [topics, setTopics] = useState([]);
   const [subtopicsMap, setSubtopicsMap] = useState({});
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [modalData, setModalData] = useState(null);
@@ -42,50 +42,36 @@ const Formulas = () => {
       const topicsData = await topicsAPI.getAll();
       const validTopics = Array.isArray(topicsData) ? topicsData : [];
       setTopics(validTopics);
-
+      
       const subMap = {};
       const subPromises = validTopics.map(async (topic) => {
         const subs = await subtopicsAPI.getByTopic(topic._id);
         subMap[topic._id] = Array.isArray(subs) ? subs : [];
       });
-
+      
       await Promise.all(subPromises);
       setSubtopicsMap(subMap);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching formula data:", error);
+      console.error('Error fetching formula data:', error);
       setLoading(false);
     }
   };
 
   const getTopicIcon = (name) => {
     const icons = {
-      "Quantitative Aptitude": <Calculator className="w-8 h-8" />,
-      "Logical Reasoning": <Brain className="w-8 h-8" />,
-      "Data Interpretation": <BarChart3 className="w-8 h-8" />,
-      "Verbal Ability": <Globe className="w-8 h-8" />,
+      'Quantitative Aptitude': <Calculator className="w-8 h-8 md:w-10 md:h-10" />,
+      'Logical Reasoning': <Brain className="w-8 h-8 md:w-10 md:h-10" />,
+      'Data Interpretation': <BarChart3 className="w-8 h-8 md:w-10 md:h-10" />,
+      'Verbal Ability': <Globe className="w-8 h-8 md:w-10 md:h-10" />
     };
-    return icons[name] || <Target className="w-8 h-8" />;
-  };
-
-  const getTopicColor = (name) => {
-    const colors = {
-      "Quantitative Aptitude":
-        "from-blue-500/20 via-indigo-500/20 to-purple-500/20",
-      "Logical Reasoning": "from-purple-500/20 via-pink-500/20 to-rose-500/20",
-      "Data Interpretation":
-        "from-cyan-500/20 via-blue-500/20 to-indigo-500/20",
-      "Verbal Ability": "from-emerald-500/20 via-teal-500/20 to-cyan-500/20",
-    };
-    return (
-      colors[name] || "from-indigo-500/20 via-purple-500/20 to-pink-500/20"
-    );
+    return icons[name] || <Target className="w-8 h-8 md:w-10 md:h-10" />;
   };
 
   const selectTopic = (topic) => {
     setActiveTopic(topic);
-    setView("subtopics");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setView('subtopics');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openModal = async (subtopic) => {
@@ -96,7 +82,7 @@ const Formulas = () => {
       setModalData(data.subtopic);
       setLoadingModal(false);
     } catch (error) {
-      console.error("Error fetching subtopic details:", error);
+      console.error('Error fetching subtopic details:', error);
       setLoadingModal(false);
     }
   };
@@ -110,22 +96,16 @@ const Formulas = () => {
     if (!activeTopic) return [];
     const subs = subtopicsMap[activeTopic._id] || [];
     if (!searchQuery) return subs;
-    return subs.filter((s) =>
-      s.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return subs.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [subtopicsMap, activeTopic, searchQuery]);
 
   const renderMathContent = (content) => {
     if (!content) return null;
-    return content.split("\n").map((line, idx) => {
-      const isLatex = line.includes("\\") || line.includes("$");
+    return content.split('\n').map((line, idx) => {
+      const isLatex = line.includes('\\') || line.includes('$');
       return (
-        <div key={idx} className="my-4 formula-line text-lg flex justify-start">
-          {isLatex ? (
-            <BlockMath math={line} />
-          ) : (
-            <span className="text-gray-300">{line}</span>
-          )}
+        <div key={idx} className="my-3 text-lg leading-relaxed text-gray-200">
+          {isLatex ? <BlockMath math={line} /> : <span>{line}</span>}
         </div>
       );
     });
@@ -133,113 +113,65 @@ const Formulas = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#0f1419] to-[#0a0e1a] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-6">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-            <div
-              className="absolute inset-0 w-20 h-20 border-4 border-transparent border-r-purple-500/30 rounded-full animate-spin"
-              style={{
-                animationDirection: "reverse",
-                animationDuration: "1.5s",
-              }}
-            ></div>
-          </div>
-          <p className="text-indigo-400 font-semibold tracking-wider uppercase text-sm">
-            Loading Formula Library...
-          </p>
+      <div className="min-h-screen bg-[#06080f] flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-t-indigo-500 border-indigo-500/10 rounded-full animate-spin"></div>
+          <span className="text-indigo-400 font-bold tracking-widest text-xs uppercase">Initializing Lab...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#0f1419] to-[#0a0e1a] text-white pt-24 pb-20 px-4 md:px-8 lg:px-12 relative overflow-hidden">
-      {/* Animated Background */}
+    <div className="min-h-screen bg-[#05070a] text-white selection:bg-indigo-500/30 selection:text-white font-sans">
+      {/* Premium Background Ambience */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {view === "topics" ? (
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            {/* Header */}
-            <header className="mb-16 text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-sm">
-                <Layers className="w-4 h-4" /> Formula Repository
-              </div>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-tight">
-                <span className="bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent">
-                  Formula Library
-                </span>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
+        {view === 'topics' ? (
+          <div className="transition-all duration-700 animate-in fade-in slide-in-from-bottom-8">
+            <header className="mb-20 text-center">
+              <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-6">
+                Formula <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Nexus</span>
               </h1>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                Explore comprehensive formulas and concepts organized by topics.
-                Click on any topic to discover subtopics and their formulas.
+              <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Unlock specialized knowledge through our academic repository. Select a primary domain to explore detailed modules.
               </p>
             </header>
 
-            {/* Topics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {topics.map((topic, index) => (
-                <div
+            {/* Step 1: Topic Selection (3 Large Cards) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {topics.map((topic) => (
+                <div 
                   key={topic._id}
                   onClick={() => selectTopic(topic)}
                   className="group relative cursor-pointer"
-                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  {/* 3D Card Effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500"></div>
-
-                  {/* Main Card */}
-                  <div className="relative h-full bg-gradient-to-br from-[#1a1f2e] to-[#0f1419] border border-white/10 rounded-3xl p-8 flex flex-col transition-all duration-500 group-hover:-translate-y-2 group-hover:border-indigo-500/30 group-hover:shadow-2xl group-hover:shadow-indigo-500/20 backdrop-blur-sm">
-                    {/* Card Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-3xl transition-all duration-500"></div>
-
-                    {/* Icon Container */}
-                    <div className="relative z-10 mb-6">
-                      <div
-                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${getTopicColor(
-                          topic.name
-                        )} flex items-center justify-center border border-white/10 group-hover:border-indigo-500/30 group-hover:scale-110 transition-all duration-500 shadow-lg`}
-                      >
-                        <div className="text-indigo-400 group-hover:text-indigo-300 transition-colors">
-                          {getTopicIcon(topic.name)}
-                        </div>
-                      </div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] blur opacity-10 group-hover:opacity-40 transition duration-500"></div>
+                  <div className="relative h-full bg-[#0d1017] border border-white/5 rounded-[2.5rem] p-10 flex flex-col items-start transition-all duration-500 group-hover:-translate-y-4 group-hover:bg-[#121620] group-hover:border-white/10 shadow-2xl overflow-hidden">
+                    {/* Decorative Background Icon */}
+                    <div className="absolute -right-8 -bottom-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity duration-700 scale-[2] pointer-events-none transform rotate-[-15deg]">
+                       {getTopicIcon(topic.name)}
                     </div>
 
-                    {/* Content */}
-                    <div className="relative z-10 flex-grow">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="h-1 w-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-                        <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
-                          Topic
-                        </span>
-                      </div>
-                      <h3 className="text-2xl font-bold mb-4 group-hover:text-white transition-colors">
-                        {topic.name}
-                      </h3>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                        Explore {subtopicsMap[topic._id]?.length || 0} subtopics
-                        with detailed formulas and explanations.
-                      </p>
+                    <div className="p-5 bg-white/[0.03] border border-white/5 rounded-3xl mb-10 text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]">
+                      {getTopicIcon(topic.name)}
+                    </div>
+                    
+                    <div className="mb-4">
+                      <span className="text-[10px] font-black tracking-[0.3em] uppercase text-[#f0a501] mb-2 block">Premium Library</span>
+                      <h3 className="text-3xl font-black tracking-tighter">{topic.name}</h3>
                     </div>
 
-                    {/* Footer */}
-                    <div className="relative z-10 flex items-center justify-between pt-6 border-t border-white/5 group-hover:border-indigo-500/20 transition-colors">
-                      <div className="flex items-center gap-2 text-indigo-400 text-sm font-semibold group-hover:text-indigo-300 transition-colors">
-                        Explore
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                      <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 text-xs font-bold text-indigo-300 group-hover:from-indigo-500/20 group-hover:to-purple-500/20 transition-all">
-                        {subtopicsMap[topic._id]?.length || 0} Formulas
-                      </div>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-12 flex-grow">
+                      Explore detailed derivations, shortcuts, and conceptual frameworks specifically calibrated for {topic.name}.
+                    </p>
+
+                    <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase tracking-widest group/btn">
+                      Explore Library <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -247,123 +179,70 @@ const Formulas = () => {
             </div>
           </div>
         ) : (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            {/* Navigation */}
-            <nav className="flex items-center justify-between mb-12">
-              <button
-                onClick={() => {
-                  setView("topics");
-                  setActiveTopic(null);
-                  setSearchQuery("");
-                }}
-                className="flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 font-semibold group px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500/30 hover:bg-white/10"
+          <div className="transition-all duration-500 animate-in fade-in slide-in-from-right-8">
+            <nav className="mb-12 flex items-center justify-between">
+              <button 
+                onClick={() => setView('topics')}
+                className="flex items-center gap-2 text-gray-500 hover:text-white transition-all duration-300 font-black uppercase tracking-widest text-[10px] group px-6 py-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10"
               >
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                <span className="text-sm">Back to Topics</span>
+                <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Categories
               </button>
-
-              <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <Info className="w-4 h-4" />
-                <span>Select a subtopic to view formulas</span>
+              
+              <div className="hidden md:flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-[#f0a501] opacity-60">
+                <Sparkles className="w-4 h-4" /> conceptual depth verified
               </div>
             </nav>
 
-            {/* Topic Header */}
-            <header className="mb-12">
-              <div className="flex items-center gap-6 mb-6">
-                <div
-                  className={`w-24 h-24 rounded-3xl bg-gradient-to-br ${getTopicColor(
-                    activeTopic.name
-                  )} flex items-center justify-center border border-white/10 shadow-xl`}
-                >
-                  <div className="text-indigo-400 text-4xl">
-                    {getTopicIcon(activeTopic.name)}
-                  </div>
+            <header className="mb-16">
+              <div className="flex items-center gap-6 mb-4">
+                <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl text-indigo-400">
+                  {getTopicIcon(activeTopic.name)}
                 </div>
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2">
-                    <span className="bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
-                      {activeTopic.name}
-                    </span>
-                  </h1>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">
-                    {filteredSubtopics.length} Subtopics Available
-                  </p>
-                </div>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight">{activeTopic.name}</h2>
               </div>
+              <p className="text-gray-500 text-lg md:text-xl max-w-2xl leading-relaxed">
+                Specialized sub-modules covering {activeTopic.name}. Select a module to view its full analytical documentation.
+              </p>
             </header>
 
-            {/* Search Bar */}
-            <div className="mb-12 max-w-2xl relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search subtopics..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#1a1f2e] border border-white/10 rounded-2xl py-4 pl-14 pr-6 outline-none focus:border-indigo-500/40 text-base transition-all backdrop-blur-sm placeholder-gray-500"
-                />
-              </div>
+            <div className="max-w-md relative group mb-16">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+              <input 
+                type="text"
+                placeholder="Search sub-modules..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-5 pl-14 pr-6 outline-none focus:border-indigo-500/30 text-lg transition-all"
+              />
             </div>
 
-            {/* Subtopics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredSubtopics.map((sub, index) => (
-                <div
+            {/* Step 2: Subtopic Grid Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredSubtopics.map((sub) => (
+                <div 
                   key={sub._id}
                   onClick={() => openModal(sub)}
                   className="group relative cursor-pointer"
-                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  {/* 3D Card Effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-500"></div>
-
-                  {/* Main Card */}
-                  <div className="relative h-full bg-gradient-to-br from-[#1a1f2e] to-[#0f1419] border border-white/10 rounded-2xl p-6 flex flex-col transition-all duration-500 group-hover:-translate-y-1 group-hover:border-indigo-500/40 group-hover:shadow-xl group-hover:shadow-indigo-500/20 backdrop-blur-sm min-h-[180px]">
-                    {/* Card Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 rounded-2xl transition-all duration-500"></div>
-
-                    {/* Content */}
-                    <div className="relative z-10 flex-grow flex flex-col">
+                  <div className="relative h-full bg-[#0d1017] border border-white/5 rounded-[1.5rem] p-8 transition-all duration-300 hover:bg-[#121620] hover:border-indigo-500/30 hover:scale-[1.02] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-h-[160px] flex flex-col justify-between">
+                    <div>
                       <div className="flex items-center justify-between mb-4">
-                        <div className="px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                          <Zap className="w-4 h-4 text-indigo-400" />
-                        </div>
-                        <Target className="w-4 h-4 text-gray-600 group-hover:text-indigo-400 transition-colors" />
+                         <span className="text-[9px] font-black tracking-[0.2em] uppercase text-indigo-400/50">Tech Module</span>
+                         <Target className="w-4 h-4 text-white/10 group-hover:text-amber-500 transition-colors" />
                       </div>
-
-                      <h3 className="text-lg font-bold mb-4 group-hover:text-white transition-colors leading-tight">
-                        {sub.name}
-                      </h3>
-
-                      <div className="mt-auto pt-4 border-t border-white/5 group-hover:border-indigo-500/20 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold text-gray-500 group-hover:text-indigo-400 transition-colors uppercase tracking-wider">
-                            View Formula
-                          </span>
-                          <div className="w-8 h-8 rounded-lg bg-white/5 group-hover:bg-gradient-to-r group-hover:from-indigo-500 group-hover:to-purple-500 flex items-center justify-center transition-all duration-500">
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                          </div>
-                        </div>
-                      </div>
+                      <h4 className="text-xl font-black tracking-tight leading-tight group-hover:text-white transition-colors">{sub.name}</h4>
+                    </div>
+                    
+                    <div className="pt-6 border-t border-white/5 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                      <span className="text-xs font-black uppercase tracking-widest text-indigo-400">View Reference</span>
+                      <ArrowRight className="w-4 h-4 text-indigo-400" />
                     </div>
                   </div>
                 </div>
               ))}
-
               {filteredSubtopics.length === 0 && (
-                <div className="col-span-full py-20 text-center border-2 border-dashed border-white/10 rounded-3xl bg-white/5">
-                  <div className="flex flex-col items-center gap-4">
-                    <Search className="w-12 h-12 text-gray-600" />
-                    <p className="text-gray-500 font-semibold text-lg">
-                      No subtopics found
-                    </p>
-                    <p className="text-gray-600 text-sm">
-                      Try adjusting your search query
-                    </p>
-                  </div>
+                <div className="col-span-full py-24 text-center border-2 border-dashed border-white/5 rounded-[2.5rem] opacity-30">
+                  <span className="text-2xl font-black uppercase tracking-widest">No modules identified</span>
                 </div>
               )}
             </div>
@@ -371,612 +250,106 @@ const Formulas = () => {
         )}
       </div>
 
-      {/* Formula Modal */}
+      {/* Immersive Formula Modal */}
       {selectedSubtopic && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 2000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "1rem",
-          }}
-        >
-          {/* Backdrop */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.8)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              transition: "opacity 0.3s ease",
-              animation: "fadeIn 0.3s ease",
-            }}
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-12 overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-[45px] animate-in fade-in duration-700" 
             onClick={closeModal}
           />
-
-          {/* Modal Container */}
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              maxWidth: "72rem",
-              maxHeight: "90vh",
-              background: "linear-gradient(to bottom right, #1a1f2e, #0f1419)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "1.5rem",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.9)",
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-              animation: "zoomIn 0.3s ease",
-            }}
-          >
+          
+          <div className="relative w-full max-w-6xl max-h-[92vh] bg-[#0d0f14] border border-white/10 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-in zoom-in-95 ease-out duration-500">
             {/* Modal Header */}
-            <div
-              style={{
-                padding: "1.5rem 2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                background:
-                  "linear-gradient(to right, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.05))",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}
-              >
-                <div
-                  style={{
-                    width: "4rem",
-                    height: "4rem",
-                    borderRadius: "1rem",
-                    background: getTopicColor(activeTopic?.name).includes(
-                      "blue"
-                    )
-                      ? "linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2))"
-                      : getTopicColor(activeTopic?.name).includes("purple")
-                      ? "linear-gradient(to bottom right, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2), rgba(251, 113, 133, 0.2))"
-                      : getTopicColor(activeTopic?.name).includes("cyan")
-                      ? "linear-gradient(to bottom right, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2))"
-                      : "linear-gradient(to bottom right, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.2))",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
-                  <div style={{ color: "#818cf8" }}>
-                    {getTopicIcon(activeTopic?.name)}
-                  </div>
+            <div className="p-8 md:p-12 flex items-center justify-between border-b border-white/5 relative overflow-hidden bg-gradient-to-b from-white/[0.02] to-transparent">
+              <div className="flex items-center gap-8">
+                <div className="w-20 h-20 bg-indigo-500/10 border border-indigo-500/20 rounded-[1.5rem] flex items-center justify-center text-indigo-400 shadow-[0_0_30px_rgba(99,102,241,0.15)] transform -rotate-6">
+                   {getTopicIcon(activeTopic?.name)}
                 </div>
                 <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                      color: "#818cf8",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    <Sparkles style={{ width: "1rem", height: "1rem" }} />
-                    Formula Details
-                  </div>
-                  <h2
-                    style={{
-                      fontSize: "clamp(1.5rem, 3vw, 2rem)",
-                      fontWeight: 700,
-                      letterSpacing: "-0.02em",
-                      color: "#fff",
-                    }}
-                  >
-                    {selectedSubtopic.name}
-                  </h2>
+                   <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-amber-500/80 mb-3">
+                     <Target className="w-4 h-4" /> Technical Reference Documentation
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">{selectedSubtopic.name}</h2>
                 </div>
               </div>
-              <button
+              <button 
                 onClick={closeModal}
-                style={{
-                  width: "3rem",
-                  height: "3rem",
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "0.75rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor =
-                    "rgba(239, 68, 68, 0.1)";
-                  e.currentTarget.style.borderColor = "rgba(239, 68, 68, 0.3)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor =
-                    "rgba(255, 255, 255, 0.05)";
-                  e.currentTarget.style.borderColor =
-                    "rgba(255, 255, 255, 0.1)";
-                }}
+                className="w-16 h-16 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl flex items-center justify-center transition-all group active:scale-90"
               >
-                <X
-                  style={{ width: "1.25rem", height: "1.25rem", color: "#fff" }}
-                />
+                <X className="w-8 h-8 group-hover:rotate-90 transition-transform duration-300" />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div
-              style={{
-                flex: 1,
-                overflowY: "auto",
-                padding: "1.5rem 2rem",
-              }}
-              className="custom-scrollbar"
-            >
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto p-8 md:p-16 scrollbar-hide">
               {loadingModal ? (
-                <div
-                  style={{
-                    height: "16rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "1.5rem",
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <div
-                      style={{
-                        width: "3rem",
-                        height: "3rem",
-                        border: "4px solid rgba(99, 102, 241, 0.2)",
-                        borderTopColor: "#6366f1",
-                        borderRadius: "50%",
-                        animation: "spin 1s linear infinite",
-                      }}
-                    ></div>
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "3rem",
-                        height: "3rem",
-                        border: "4px solid transparent",
-                        borderRightColor: "rgba(168, 85, 247, 0.3)",
-                        borderRadius: "50%",
-                        animation: "spin 1.5s linear infinite reverse",
-                      }}
-                    ></div>
-                  </div>
-                  <p
-                    style={{
-                      color: "#6b7280",
-                      fontWeight: 600,
-                      fontSize: "0.875rem",
-                    }}
-                  >
-                    Loading formulas...
-                  </p>
+                <div className="h-96 flex flex-col items-center justify-center gap-8">
+                  <div className="w-16 h-16 border-[6px] border-white/5 border-t-indigo-500 rounded-full animate-spin shadow-glow"></div>
+                  <p className="text-gray-600 font-black uppercase tracking-[0.5em] text-[10px] animate-pulse">Decrypting Information Core</p>
                 </div>
               ) : modalData ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2rem",
-                  }}
-                >
-                  {/* Description */}
-                  {modalData.description && (
-                    <div
-                      style={{
-                        padding: "1.5rem",
-                        borderRadius: "1rem",
-                        backgroundColor: "rgba(255, 255, 255, 0.05)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        backdropFilter: "blur(10px)",
-                      }}
-                    >
-                      <p
-                        style={{
-                          color: "#d1d5db",
-                          lineHeight: "1.75",
-                          fontSize: "1rem",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        {modalData.description}
-                      </p>
-                    </div>
-                  )}
+                <div className="space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+                  <div className="relative">
+                    <div className="absolute -left-8 top-0 bottom-0 w-1 bg-gradient-to-g from-indigo-500 to-transparent"></div>
+                    <p className="text-gray-400 text-xl md:text-2xl leading-relaxed italic font-medium max-w-4xl px-4">
+                      "{modalData.description || `Tactical analysis and rigorous derivations calibrated for the ${selectedSubtopic.name} domain.`}"
+                    </p>
+                  </div>
 
-                  {/* Formula Count Badge */}
-                  {modalData.formulas && modalData.formulas.length > 0 && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingLeft: "1rem",
-                        paddingRight: "1rem",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.75rem",
-                        }}
-                      >
-                        <div
-                          style={{
-                            padding: "0.5rem 1rem",
-                            borderRadius: "9999px",
-                            background:
-                              "linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2))",
-                            border: "1px solid rgba(99, 102, 241, 0.3)",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "0.875rem",
-                              fontWeight: 700,
-                              color: "#c7d2fe",
-                            }}
-                          >
-                            {modalData.formulas.length}{" "}
-                            {modalData.formulas.length === 1
-                              ? "Formula"
-                              : "Formulas"}{" "}
-                            Available
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Formulas - Display ALL variants */}
                   {modalData.formulas && modalData.formulas.length > 0 ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1.5rem",
-                      }}
-                    >
-                      {modalData.formulas.map((formula, idx) => (
-                        <div
-                          key={idx}
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "1.5rem",
-                            padding: "1.5rem 2rem",
-                            borderRadius: "1rem",
-                            background:
-                              "linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))",
-                            border: "1px solid rgba(255, 255, 255, 0.1)",
-                            backdropFilter: "blur(10px)",
-                            transition: "all 0.3s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "rgba(99, 102, 241, 0.3)";
-                            e.currentTarget.style.boxShadow =
-                              "0 20px 25px -5px rgba(99, 102, 241, 0.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "rgba(255, 255, 255, 0.1)";
-                            e.currentTarget.style.boxShadow = "none";
-                          }}
-                        >
-                          {/* Formula Header with Variant Indicator */}
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "flex-start",
-                              justifyContent: "space-between",
-                              gap: "1rem",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "flex-start",
-                                gap: "1rem",
-                                flex: 1,
-                              }}
-                            >
-                              <div
-                                style={{
-                                  flexShrink: 0,
-                                  width: "3rem",
-                                  height: "3rem",
-                                  borderRadius: "0.75rem",
-                                  background:
-                                    "linear-gradient(to bottom right, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))",
-                                  border: "1px solid rgba(99, 102, 241, 0.3)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  fontSize: "1rem",
-                                  fontWeight: 700,
-                                  color: "#c7d2fe",
-                                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                                }}
-                              >
-                                {String(idx + 1).padStart(2, "0")}
-                              </div>
-                              <div style={{ flex: 1 }}>
-                                <h3
-                                  style={{
-                                    fontSize: "clamp(1.25rem, 2vw, 1.5rem)",
-                                    fontWeight: 700,
-                                    marginBottom: "0.5rem",
-                                    color: "#e5e7eb",
-                                    transition: "color 0.3s ease",
-                                  }}
-                                >
-                                  {formula.title}
-                                </h3>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      padding: "0.25rem 0.75rem",
-                                      borderRadius: "0.5rem",
-                                      backgroundColor:
-                                        "rgba(99, 102, 241, 0.1)",
-                                      border:
-                                        "1px solid rgba(99, 102, 241, 0.2)",
-                                      fontSize: "0.75rem",
-                                      fontWeight: 600,
-                                      color: "#818cf8",
-                                      textTransform: "uppercase",
-                                      letterSpacing: "0.05em",
-                                    }}
-                                  >
-                                    Variant {idx + 1}
-                                  </span>
-                                  {modalData.formulas.length > 1 && (
-                                    <span
-                                      style={{
-                                        fontSize: "0.75rem",
-                                        color: "#6b7280",
-                                      }}
-                                    >
-                                      of {modalData.formulas.length} variants
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
+                    modalData.formulas.map((formula, idx) => (
+                      <div key={idx} className="group/formula pb-24 last:pb-8 relative">
+                        {/* Formula Title & Metadata */}
+                        <div className="mb-12 flex items-center justify-between relative z-10">
+                          <div className="flex items-start gap-6">
+                            <div className="mt-1 w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center font-black text-xs text-indigo-400">
+                              {String(idx + 1).padStart(2, '0')}
+                            </div>
+                            <div>
+                               <h3 className="text-3xl font-black tracking-tight text-white mb-2 group-hover/formula:text-indigo-400 transition-colors uppercase leading-tight">
+                                {formula.title}
+                              </h3>
+                              <span className="text-[10px] font-black tracking-[0.3em] uppercase text-gray-600 block">Formal Representation Block</span>
                             </div>
                           </div>
-
-                          {/* Formula Content - Enhanced Display */}
-                          <div
-                            style={{
-                              padding: "1.5rem 2rem",
-                              borderRadius: "0.75rem",
-                              background:
-                                "linear-gradient(to bottom right, #0a0e1a, #05060a)",
-                              border: "1px solid rgba(255, 255, 255, 0.05)",
-                              boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.3)",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "1rem",
-                              }}
-                            >
-                              <Calculator
-                                style={{
-                                  width: "1.25rem",
-                                  height: "1.25rem",
-                                  color: "#818cf8",
-                                }}
-                              />
-                              <span
-                                style={{
-                                  fontSize: "0.875rem",
-                                  fontWeight: 600,
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.05em",
-                                  color: "#818cf8",
-                                }}
-                              >
-                                Formula
-                              </span>
-                            </div>
-                            <div
-                              className="math-container"
-                              style={{ fontSize: "1.125rem" }}
-                            >
-                              {renderMathContent(formula.content)}
-                            </div>
-                          </div>
-
-                          {/* Example - Enhanced Display */}
-                          {formula.example && (
-                            <div
-                              style={{
-                                padding: "1.5rem 2rem",
-                                borderRadius: "0.75rem",
-                                background:
-                                  "linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))",
-                                border: "1px solid rgba(99, 102, 241, 0.2)",
-                                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.75rem",
-                                  marginBottom: "1rem",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    width: "2.5rem",
-                                    height: "2.5rem",
-                                    borderRadius: "0.5rem",
-                                    backgroundColor: "rgba(99, 102, 241, 0.2)",
-                                    border: "1px solid rgba(99, 102, 241, 0.3)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                  }}
-                                >
-                                  <Lightbulb
-                                    style={{
-                                      width: "1.25rem",
-                                      height: "1.25rem",
-                                      color: "#818cf8",
-                                    }}
-                                  />
-                                </div>
-                                <span
-                                  style={{
-                                    fontSize: "0.875rem",
-                                    fontWeight: 600,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.05em",
-                                    color: "#818cf8",
-                                  }}
-                                >
-                                  Example & Application
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  paddingLeft: "1rem",
-                                  borderLeft:
-                                    "4px solid rgba(99, 102, 241, 0.4)",
-                                }}
-                              >
-                                <p
-                                  style={{
-                                    color: "#e5e7eb",
-                                    lineHeight: "1.75",
-                                    fontSize: "1rem",
-                                  }}
-                                >
-                                  {formula.example}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Separator for multiple formulas */}
-                          {idx < modalData.formulas.length - 1 && (
-                            <div
-                              style={{
-                                paddingTop: "1rem",
-                                borderTop:
-                                  "1px solid rgba(255, 255, 255, 0.05)",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "0.5rem",
-                                  fontSize: "0.75rem",
-                                  color: "#4b5563",
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.05em",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    height: "1px",
-                                    width: "4rem",
-                                    background:
-                                      "linear-gradient(to right, transparent, rgba(99, 102, 241, 0.3), transparent)",
-                                  }}
-                                ></div>
-                                <span>Next Formula</span>
-                                <div
-                                  style={{
-                                    height: "1px",
-                                    width: "4rem",
-                                    background:
-                                      "linear-gradient(to right, transparent, rgba(99, 102, 241, 0.3), transparent)",
-                                  }}
-                                ></div>
-                              </div>
-                            </div>
-                          )}
+                          <Sparkles className="w-6 h-6 text-indigo-500/20 group-hover/formula:text-indigo-500/50 transition-all duration-700" />
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        paddingTop: "5rem",
-                        paddingBottom: "5rem",
-                        textAlign: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          gap: "1rem",
-                        }}
-                      >
-                        <BookOpen
-                          style={{
-                            width: "4rem",
-                            height: "4rem",
-                            color: "#4b5563",
-                          }}
-                        />
-                        <p
-                          style={{
-                            color: "#6b7280",
-                            fontWeight: 600,
-                            fontSize: "1.125rem",
-                          }}
-                        >
-                          No formulas available
-                        </p>
-                        <p
-                          style={{
-                            color: "#4b5563",
-                            fontSize: "0.875rem",
-                          }}
-                        >
-                          Formulas will be added soon
-                        </p>
+
+                        {/* Visual & Examples */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 relative">
+                           {/* Decorative Underlay */}
+                           <div className="absolute -inset-10 bg-indigo-500/5 blur-[80px] opacity-0 group-hover/formula:opacity-100 transition-opacity duration-1000 -z-10"></div>
+                           
+                           {/* Math Notation Block */}
+                           <div className="lg:col-span-8 bg-[#05060a] rounded-[2.5rem] p-12 md:p-16 border border-white/5 shadow-2xl relative overflow-hidden group/math hover:border-indigo-500/20 transition-all duration-500">
+                              <div className="absolute top-6 right-10 text-[9px] font-black text-white/5 tracking-[0.5em] uppercase group-hover/math:text-indigo-500/20 transition-colors">Analytical Pattern</div>
+                              <div className="relative z-10 transform md:scale-110 lg:scale-125 origin-left">
+                                 {renderMathContent(formula.content)}
+                              </div>
+                           </div>
+
+                           {/* Pro-Tip/Example Block */}
+                           {formula.example && (
+                            <div className="lg:col-span-4 rounded-[2.5rem] bg-amber-500/[0.02] border border-amber-500/10 p-10 flex flex-col justify-center relative hover:bg-amber-500/[0.04] transition-all duration-500 group/tip">
+                               <div className="absolute top-8 right-8 text-amber-500 opacity-20 transform -rotate-12 group-hover/tip:rotate-0 transition-transform duration-700">
+                                  <Lightbulb className="w-10 h-10" />
+                               </div>
+                               <div className="flex items-center gap-3 mb-6">
+                                  <span className="h-[2px] w-6 bg-amber-500 opacity-30"></span>
+                                  <span className="text-[10px] font-black tracking-[0.4em] uppercase text-amber-500">Strategist Note</span>
+                               </div>
+                               <p className="text-gray-400 italic text-lg leading-relaxed border-l-2 border-amber-500/30 pl-8">
+                                  {formula.example}
+                               </p>
+                            </div>
+                           )}
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="py-24 text-center opacity-20 grayscale flex flex-col items-center gap-8">
+                      <Layers className="w-24 h-24" />
+                      <h4 className="text-2xl font-black uppercase tracking-[0.6em]">No Formula Modules Found</h4>
                     </div>
                   )}
                 </div>
@@ -984,57 +357,12 @@ const Formulas = () => {
             </div>
 
             {/* Modal Footer */}
-            <div
-              style={{
-                padding: "1.5rem",
-                borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-                backgroundColor: "rgba(0, 0, 0, 0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                fontSize: "0.75rem",
-                color: "#6b7280",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "0.5rem",
-                      height: "0.5rem",
-                      borderRadius: "50%",
-                      backgroundColor: "#10b981",
-                    }}
-                  ></div>
-                  <span>Verified Content</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "0.5rem",
-                      height: "0.5rem",
-                      borderRadius: "50%",
-                      backgroundColor: "#3b82f6",
-                    }}
-                  ></div>
-                  <span>Mathematically Accurate</span>
-                </div>
+            <div className="p-10 border-t border-white/5 bg-black py-4 flex items-center justify-between text-[10px] font-black text-gray-700 tracking-[0.6em] uppercase">
+              <div className="flex items-center gap-12">
+                <span className="flex items-center gap-3">Verified Academic Integrity</span>
+                <span className="flex items-center gap-3">Cognitive Clarity High</span>
               </div>
-              <span style={{ color: "#4b5563" }}>Formula Library v2.0</span>
+              <div className="text-white/5">Antigravity Design Lab v7.4</div>
             </div>
           </div>
         </div>

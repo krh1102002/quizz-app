@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ========================================
    QUIZMASTER - 3D DESIGN SYSTEM
    Premium glassmorphism & 3D effects
