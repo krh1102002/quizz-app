@@ -45,11 +45,7 @@ export default function Navbar() {
               All Quizzes
             </Link>
           </li>
-          <li>
-            <Link to="/formulas" className={`nav-link ${isActive('/formulas')}`} onClick={closeMenu}>
-              Formulas
-            </Link>
-          </li>
+
           <li>
             <Link to="/random" className={`nav-link ${isActive('/random')}`} onClick={closeMenu}>
               Random Quiz
